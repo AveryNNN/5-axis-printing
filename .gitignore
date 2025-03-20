@@ -1,0 +1,13 @@
+# Keil 相关
+*.uvguix
+*.uvoptx
+*.uvprojx
+
+# 编译生成的对象文件
+*.o
+*.crf
+*.axf
+*.hex
+*.htm
+*.map
+*.dep

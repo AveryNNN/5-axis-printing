@@ -1,7 +1,6 @@
 #ifndef gpio_config_h
 #define gpio_config_h
 
-
 #include "stm32f4xx.h"
 
 #define DEBUG 0
@@ -80,30 +79,31 @@
 *
 **********************************************************************************************
 */
-//LED1
+//LED1 - 使用PA8作为LED引脚，可以根据SKR PRO板实际情况调整
 #define LED1_PIN                  GPIO_PIN_8                
 #define LED1_GPIO_PORT            GPIOA                     
-#define LED1_GPIO_CLK_ENABLE()    __GPIOA_CLK_ENABLE()
+#define LED1_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOA_CLK_ENABLE()
 
-//LED2
-#define LED2_PIN                  GPIO_PIN_7                 
-#define LED2_GPIO_PORT            GPIOA                      
-#define LED2_GPIO_CLK_ENABLE()    __GPIOA_CLK_ENABLE()
+//LED2 - 使用PG4作为LED引脚，对应EXP1_01_PIN，可根据实际情况调整
+#define LED2_PIN                  GPIO_PIN_4                 
+#define LED2_GPIO_PORT            GPIOG                      
+#define LED2_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOG_CLK_ENABLE()
 
-//LED3
-#define LED3_PIN                  GPIO_PIN_6
-#define LED3_GPIO_PORT            GPIOA                      
-#define LED3_GPIO_CLK_ENABLE()    __GPIOA_CLK_ENABLE()
+//LED3 - 使用PD12作为LED引脚，对应HEATER_BED_PIN，可根据实际情况调整
+#define LED3_PIN                  GPIO_PIN_12
+#define LED3_GPIO_PORT            GPIOD                      
+#define LED3_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
 
-//LED4
-#define LED4_PIN                  GPIO_PIN_8
+//LED4 - 使用PB1作为LED引脚，对应HEATER_0_PIN，可根据实际情况调整
+#define LED4_PIN                  GPIO_PIN_1
 #define LED4_GPIO_PORT            GPIOB                      
-#define LED4_GPIO_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
-//
-#define		LED1			PAout(8)
-#define		LED2			PAout(7)
-#define		LED3			PAout(6)
-#define		LED4			PBout(8)
+#define LED4_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOB_CLK_ENABLE()
+
+#define LED1			PAout(8)
+#define LED2			PGout(4)
+#define LED3			PDout(12)
+#define LED4			PBout(1)
+
 /*
 **********************************************************************************************
 *                                         步进电机接口定义
@@ -111,165 +111,170 @@
 **********************************************************************************************
 */
 //
-// Limit Switches
-// x
-#define	X_MIN_LIMIT_PORT								GPIOG
-#define	X_MIN_LIMIT_PIN									GPIO_PIN_2
-#define	X_MIN_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+// Limit Switches - 使用SKR PRO的限位开关引脚
+// X
+#define X_MIN_LIMIT_PORT                GPIOB
+#define X_MIN_LIMIT_PIN                 GPIO_PIN_10  // X_MIN_PIN from pins_BTT_SKR_PRO_common.h
+#define X_MIN_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOB_CLK_ENABLE()
 
-#define	X_ZERO_LIMIT_PORT								GPIOC
-#define	X_ZERO_LIMIT_PIN								GPIO_PIN_8
-#define	X_ZERO_LIMIT_GPIO_CLK_ENABLE()	__GPIOC_CLK_ENABLE()
+#define X_ZERO_LIMIT_PORT               GPIOE
+#define X_ZERO_LIMIT_PIN                GPIO_PIN_15  // X_MAX_PIN from pins_BTT_SKR_PRO_common.h
+#define X_ZERO_LIMIT_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	X_MAX_LIMIT_PORT								GPIOG
-#define	X_MAX_LIMIT_PIN									GPIO_PIN_3
-#define	X_MAX_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+#define X_MAX_LIMIT_PORT                GPIOE
+#define X_MAX_LIMIT_PIN                 GPIO_PIN_15  // 使用相同引脚作为最大限位，可根据需要更改
+#define X_MAX_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-// Y G4 G8 G5
-#define	Y_MIN_LIMIT_PORT								GPIOG
-#define	Y_MIN_LIMIT_PIN									GPIO_PIN_5
-#define	Y_MIN_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+// Y
+#define Y_MIN_LIMIT_PORT                GPIOE
+#define Y_MIN_LIMIT_PIN                 GPIO_PIN_12  // Y_MIN_PIN from pins_BTT_SKR_PRO_common.h
+#define Y_MIN_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	Y_ZERO_LIMIT_PORT								GPIOG
-#define	Y_ZERO_LIMIT_PIN								GPIO_PIN_8
-#define	Y_ZERO_LIMIT_GPIO_CLK_ENABLE()	__GPIOG_CLK_ENABLE()
+#define Y_ZERO_LIMIT_PORT               GPIOE
+#define Y_ZERO_LIMIT_PIN                GPIO_PIN_10  // Y_MAX_PIN from pins_BTT_SKR_PRO_common.h
+#define Y_ZERO_LIMIT_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	Y_MAX_LIMIT_PORT								GPIOG
-#define	Y_MAX_LIMIT_PIN									GPIO_PIN_4
-#define	Y_MAX_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+#define Y_MAX_LIMIT_PORT                GPIOE
+#define Y_MAX_LIMIT_PIN                 GPIO_PIN_10  // 使用相同引脚作为最大限位，可根据需要更改
+#define Y_MAX_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-// Z G6 D3 G7
-#define	Z_MIN_LIMIT_PORT								GPIOG
-#define	Z_MIN_LIMIT_PIN									GPIO_PIN_7
-#define	Z_MIN_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+// Z
+#define Z_MIN_LIMIT_PORT                GPIOG
+#define Z_MIN_LIMIT_PIN                 GPIO_PIN_8   // Z_MIN_PIN from pins_BTT_SKR_PRO_common.h
+#define Z_MIN_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOG_CLK_ENABLE()
 
-#define	Z_ZERO_LIMIT_PORT								GPIOD
-#define	Z_ZERO_LIMIT_PIN								GPIO_PIN_3
-#define	Z_ZERO_LIMIT_GPIO_CLK_ENABLE()	__GPIOD_CLK_ENABLE()
+#define Z_ZERO_LIMIT_PORT               GPIOG
+#define Z_ZERO_LIMIT_PIN                GPIO_PIN_5   // Z_MAX_PIN from pins_BTT_SKR_PRO_common.h
+#define Z_ZERO_LIMIT_GPIO_CLK_ENABLE()  __HAL_RCC_GPIOG_CLK_ENABLE()
 
-#define	Z_MAX_LIMIT_PORT								GPIOG
-#define	Z_MAX_LIMIT_PIN									GPIO_PIN_6
-#define	Z_MAX_LIMIT_GPIO_CLK_ENABLE()		__GPIOG_CLK_ENABLE()
+#define Z_MAX_LIMIT_PORT                GPIOG
+#define Z_MAX_LIMIT_PIN                 GPIO_PIN_5   // 使用相同引脚作为最大限位，可根据需要更改
+#define Z_MAX_LIMIT_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOG_CLK_ENABLE()
 
-#define X_MIN_PIN                      	    PGin(2)
-#define X_ZERO_PIN                      	  PCin(8)
-#define X_MAX_PIN                      	    PGin(3)
+#define X_MIN_PIN                       PBin(10)
+#define X_ZERO_PIN                      PEin(15)
+#define X_MAX_PIN                       PEin(15)
 
-#define Y_MIN_PIN                      	    PGin(5)
-#define Y_ZERO_PIN                      	  PGin(8)
-#define Y_MAX_PIN                      	    PGin(4)
+#define Y_MIN_PIN                       PEin(12)
+#define Y_ZERO_PIN                      PEin(10)
+#define Y_MAX_PIN                       PEin(10)
 
-#define Z_MIN_PIN                      	    PGin(7)
-#define Z_ZERO_PIN                      	  PDin(3)
-#define Z_MAX_PIN                      	    PGin(6)
+#define Z_MIN_PIN                       PGin(8)
+#define Z_ZERO_PIN                      PGin(5)
+#define Z_MAX_PIN                       PGin(5)
+
 //
-// Steppers
+// Steppers - 使用SKR PRO的电机控制引脚
 //
-//X I5 F14 F15
-#define	X_MOTION_STEP_PORT										GPIOF
-#define	X_MOTION_STEP_PIN											GPIO_PIN_15
-#define	X_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOF_CLK_ENABLE()
+// X
+#define X_MOTION_STEP_PORT                GPIOE
+#define X_MOTION_STEP_PIN                 GPIO_PIN_9  // X_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define X_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	X_MOTION_DIR_PORT											GPIOF
-#define	X_MOTION_DIR_PIN											GPIO_PIN_14
-#define	X_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOF_CLK_ENABLE()
+#define X_MOTION_DIR_PORT                 GPIOF
+#define X_MOTION_DIR_PIN                  GPIO_PIN_1  // X_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define X_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOF_CLK_ENABLE()
 
-#define	X_MOTION_ENA_PORT											GPIOI
-#define	X_MOTION_ENA_PIN											GPIO_PIN_5
-#define	X_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOI_CLK_ENABLE()
-// Y I6 F12 F13
-#define	Y_MOTION_STEP_PORT										GPIOF
-#define	Y_MOTION_STEP_PIN											GPIO_PIN_13
-#define	Y_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOF_CLK_ENABLE()
+#define X_MOTION_ENA_PORT                 GPIOF
+#define X_MOTION_ENA_PIN                  GPIO_PIN_2  // X_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define X_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOF_CLK_ENABLE()
 
-#define	Y_MOTION_DIR_PORT											GPIOF
-#define	Y_MOTION_DIR_PIN											GPIO_PIN_12
-#define	Y_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOF_CLK_ENABLE()
+// Y
+#define Y_MOTION_STEP_PORT                GPIOE
+#define Y_MOTION_STEP_PIN                 GPIO_PIN_11 // Y_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define Y_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	Y_MOTION_ENA_PORT											GPIOI
-#define	Y_MOTION_ENA_PIN											GPIO_PIN_6
-#define	Y_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOI_CLK_ENABLE()
-// Z I7 B2 F11
-#define	Z_MOTION_STEP_PORT										GPIOF
-#define	Z_MOTION_STEP_PIN											GPIO_PIN_11
-#define	Z_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOF_CLK_ENABLE()
+#define Y_MOTION_DIR_PORT                 GPIOE
+#define Y_MOTION_DIR_PIN                  GPIO_PIN_8  // Y_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define Y_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	Z_MOTION_DIR_PORT											GPIOB
-#define	Z_MOTION_DIR_PIN											GPIO_PIN_2
-#define	Z_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOB_CLK_ENABLE()
+#define Y_MOTION_ENA_PORT                 GPIOD
+#define Y_MOTION_ENA_PIN                  GPIO_PIN_7  // Y_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define Y_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOD_CLK_ENABLE()
 
-#define	Z_MOTION_ENA_PORT											GPIOI
-#define	Z_MOTION_ENA_PIN											GPIO_PIN_7
-#define	Z_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOI_CLK_ENABLE()
-// A E8 E7 D1
-#define	A_MOTION_STEP_PORT										GPIOE
-#define	A_MOTION_STEP_PIN											GPIO_PIN_11
-#define	A_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
+// Z
+#define Z_MOTION_STEP_PORT                GPIOE
+#define Z_MOTION_STEP_PIN                 GPIO_PIN_13 // Z_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define Z_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	A_MOTION_DIR_PORT											GPIOE
-#define	A_MOTION_DIR_PIN											GPIO_PIN_10
-#define	A_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
+#define Z_MOTION_DIR_PORT                 GPIOC
+#define Z_MOTION_DIR_PIN                  GPIO_PIN_2  // Z_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define Z_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOC_CLK_ENABLE()
 
-#define	A_MOTION_ENA_PORT											GPIOE
-#define	A_MOTION_ENA_PIN											GPIO_PIN_9
-#define	A_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
-// B D0 D15 D14
-#define	B_MOTION_STEP_PORT										GPIOE
-#define	B_MOTION_STEP_PIN											GPIO_PIN_14
-#define	B_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
+#define Z_MOTION_ENA_PORT                 GPIOC
+#define Z_MOTION_ENA_PIN                  GPIO_PIN_0  // Z_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define Z_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOC_CLK_ENABLE()
 
-#define	B_MOTION_DIR_PORT											GPIOE
-#define	B_MOTION_DIR_PIN											GPIO_PIN_13
-#define	B_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
+// E0 (A)
+#define A_MOTION_STEP_PORT                GPIOE
+#define A_MOTION_STEP_PIN                 GPIO_PIN_14 // E0_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define A_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	B_MOTION_ENA_PORT											GPIOE
-#define	B_MOTION_ENA_PIN											GPIO_PIN_12
-#define	B_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOE_CLK_ENABLE()
-// E
-#define	E_MOTION_STEP_PORT										GPIOC
-#define	E_MOTION_STEP_PIN											GPIO_PIN_0
-#define	E_MOTION_STEP_GPIO_CLK_ENABLE()				__GPIOC_CLK_ENABLE()
+#define A_MOTION_DIR_PORT                 GPIOA
+#define A_MOTION_DIR_PIN                  GPIO_PIN_0  // E0_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define A_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOA_CLK_ENABLE()
 
-#define	E_MOTION_DIR_PORT											GPIOH
-#define	E_MOTION_DIR_PIN											GPIO_PIN_5
-#define	E_MOTION_DIR_GPIO_CLK_ENABLE()				__GPIOH_CLK_ENABLE()
+#define A_MOTION_ENA_PORT                 GPIOC
+#define A_MOTION_ENA_PIN                  GPIO_PIN_3  // E0_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define A_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOC_CLK_ENABLE()
 
-#define	E_MOTION_ENA_PORT											GPIOH
-#define	E_MOTION_ENA_PIN											GPIO_PIN_4
-#define	E_MOTION_ENA_GPIO_CLK_ENABLE()				__GPIOH_CLK_ENABLE()
+// E1 (B)
+#define B_MOTION_STEP_PORT                GPIOD
+#define B_MOTION_STEP_PIN                 GPIO_PIN_15 // E1_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define B_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOD_CLK_ENABLE()
 
+#define B_MOTION_DIR_PORT                 GPIOE
+#define B_MOTION_DIR_PIN                  GPIO_PIN_7  // E1_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define B_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOE_CLK_ENABLE()
 
-#define	PERSS_ENA_PORT											GPIOC
-#define	PERSS_ENA_PIN											  GPIO_PIN_1
-#define	PERSS_ENA_GPIO_CLK_ENABLE()				  __GPIOC_CLK_ENABLE()
+#define B_MOTION_ENA_PORT                 GPIOA
+#define B_MOTION_ENA_PIN                  GPIO_PIN_3  // E1_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define B_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOA_CLK_ENABLE()
 
+// E2 (E)
+#define E_MOTION_STEP_PORT                GPIOD
+#define E_MOTION_STEP_PIN                 GPIO_PIN_13 // E2_STEP_PIN from pins_BTT_SKR_PRO_common.h
+#define E_MOTION_STEP_GPIO_CLK_ENABLE()   __HAL_RCC_GPIOD_CLK_ENABLE()
 
-#define X_STEP_PIN                          PFout(15)
-#define X_DIR_PIN                           PFout(14)
-#define X_ENABLE_PIN                        PIout(5)
+#define E_MOTION_DIR_PORT                 GPIOG
+#define E_MOTION_DIR_PIN                  GPIO_PIN_9  // E2_DIR_PIN from pins_BTT_SKR_PRO_common.h
+#define E_MOTION_DIR_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOG_CLK_ENABLE()
 
-#define Y_STEP_PIN                          PFout(13)
-#define Y_DIR_PIN                           PFout(12)
-#define Y_ENABLE_PIN                        PIout(6)
+#define E_MOTION_ENA_PORT                 GPIOF
+#define E_MOTION_ENA_PIN                  GPIO_PIN_0  // E2_ENABLE_PIN from pins_BTT_SKR_PRO_common.h
+#define E_MOTION_ENA_GPIO_CLK_ENABLE()    __HAL_RCC_GPIOF_CLK_ENABLE()
 
-#define Z_STEP_PIN                          PFout(11)
-#define Z_DIR_PIN                           PBout(2)
-#define Z_ENABLE_PIN                        PIout(7)
+// 气压模块引脚，使用一个未被占用的GPIO引脚
+#define PERSS_ENA_PORT                    GPIOC
+#define PERSS_ENA_PIN                     GPIO_PIN_6  // 可以选择一个未被占用的引脚
+#define PERSS_ENA_GPIO_CLK_ENABLE()       __HAL_RCC_GPIOC_CLK_ENABLE()
 
-#define A_STEP_PIN                          PEout(11)
-#define A_DIR_PIN                           PEout(10)
-#define A_ENABLE_PIN                        PDout(9)
+// 步进电机控制引脚宏定义
+#define X_STEP_PIN                        PEout(9)
+#define X_DIR_PIN                         PFout(1)
+#define X_ENABLE_PIN                      PFout(2)
 
-#define B_STEP_PIN                          PEout(14)
-#define B_DIR_PIN                           PEout(13)
-#define B_ENABLE_PIN                        PEout(12)
+#define Y_STEP_PIN                        PEout(11)
+#define Y_DIR_PIN                         PEout(8)
+#define Y_ENABLE_PIN                      PDout(7)
 
+#define Z_STEP_PIN                        PEout(13)
+#define Z_DIR_PIN                         PCout(2)
+#define Z_ENABLE_PIN                      PCout(0)
 
-#define E0_STEP_PIN                         PCout(0)
-#define E0_DIR_PIN                          PHout(5)
-#define E0_ENABLE_PIN                       PHout(4)
+#define A_STEP_PIN                        PEout(14)
+#define A_DIR_PIN                         PAout(0)
+#define A_ENABLE_PIN                      PCout(3)
 
-#define PRESS_STEP_PIN											PCout(1)
+#define B_STEP_PIN                        PDout(15)
+#define B_DIR_PIN                         PEout(7)
+#define B_ENABLE_PIN                      PAout(3)
+
+#define E0_STEP_PIN                       PDout(13)
+#define E0_DIR_PIN                        PGout(9)
+#define E0_ENABLE_PIN                     PFout(0)
+
+#define PRESS_STEP_PIN                    PCout(6)
 
 /*
 **********************************************************************************************
@@ -284,7 +289,5 @@
 *
 **********************************************************************************************
 */
-
-
 
 #endif
