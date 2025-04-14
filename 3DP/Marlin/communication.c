@@ -564,39 +564,9 @@ void process_commands(void)
 				printf(" B@:%d\n\r",10);
 			return;
 			case 106:
-				if(code_seen('P'))
-				{
-					switch( (int)code_value())
-					{
-						case 1:
-							get_mp1_data(current_position[X_AXIS],current_position[Y_AXIS]);
-						break;
-						case 2:
-							get_mp2_data(current_position[X_AXIS],current_position[Y_AXIS]);
-						break;
-						case 3:
-							get_mp3_data(current_position[X_AXIS],current_position[Y_AXIS]);
-						break;
-						default:
-							break;
-					}
-				}
-				else if(code_seen('R'))
-				{
-					switch( (int)code_value())
-					{
-						case 1:
-							compute_angle();
-						break;
-						case 2:					
-							send_pluse_to_stepper();
-							printf("leveling end.\r\n");
-						break;
-						default:
-							break;
-					}
-				}
-			break;
+				break;
+
+
 			case 82:
 	        axis_relative_modes[3] = false;
 	        break;

@@ -51,7 +51,7 @@ volatile signed char count_direction[NUM_AXIS] = {  1, 1, 1, 1, 1, 1};
 volatile long count_position[NUM_AXIS] = { 0, 0, 0, 0, 0, 0};
 
 // 限位相关
-unsigned char check_endstops = true;
+unsigned char check_endstops = false;
 volatile long endstops_trigsteps[3]={0,0,0};
 static volatile uint8_t endstop_x_hit=false;
 static volatile uint8_t endstop_y_hit=false;

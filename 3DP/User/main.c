@@ -8,9 +8,8 @@
   ******************************************************************************
   * @attention
   *
-  * 实验平台:野火  STM32 F407 开发板 
-  * 论坛    :http://www.firebbs.cn
-  * 淘宝    :http://firestm32.taobao.com
+  * 实验平台 STM32 F407 开发板 
+
   *
   ******************************************************************************
   */
@@ -33,6 +32,23 @@ void Delay(__IO uint32_t nCount)	 //简单的延时函数
 }	
 	
 extern float angle_a,angle_b;
+
+//void test_x_motor(void) {
+//  X_ENABLE_PIN = 0;  // 使能
+//  X_DIR_PIN = 1;     // 设置方向
+//	printf("kaizhuan\n");
+//  
+//  for(int i=0; i<1000; i++) {
+//     X_STEP_PIN = 1;
+//    HAL_Delay(100);
+//		printf("pin_1");
+//    X_STEP_PIN = 0;
+//    HAL_Delay(100);
+//		printf("pin_0");
+//  }
+//}
+
+
 /**
   * @brief  主函数
   * @param  无
@@ -40,32 +56,48 @@ extern float angle_a,angle_b;
   */
 int main(void) 
 {
-	
+  
 	/* 初始化系统时钟为168MHz */
-	SystemClock_Config();
+  SystemClock_Config();
   
   /* LED 灯初始化 */
   LED_GPIO_Config();
   
-  /* 调试串口初始化 */
+  /* 初始化BSP模块 */
   bsp_init();
-	rs485_init(115200);
-	printf("start\r\n");
-	SERIAL_ECHO_START;
-	printf(MACHINE_NAME);
-	printf(FIRMWARE_URL);
-	printf("\r\n");
-	plan_init();
 	
+  SERIAL_USART_Config(115200);
+	
+  /* 打印欢迎信息 */
+  printf("start\r\n");
+  SERIAL_ECHO_START;
+  printf(MACHINE_NAME);
+	printf("\r\n");
+  printf(FIRMWARE_URL);
+  printf("\r\n");
+  
+  /* 规划器初始化 */
+  plan_init();
+	
+
+  
+  /* 运行串口通信测试 */
+  //UART_Test();      // 基本串口通信测试
+  
+  /* 主循环 */
   while(1)
-	{
-		bsp_command_process();
-//		X_ENABLE_PIN = ~X_ENABLE_PIN;
-//		Y_ENABLE_PIN = ~Y_ENABLE_PIN;
-//		Z_ENABLE_PIN = ~Z_ENABLE_PIN;
-//		HAL_Delay(200);
-	}
+  {
+   bsp_command_process();
+	//test_x_motor(void)；
+
+  }
 }
+
+
+
+
+
+
 
 /**
   * @brief  System Clock Configuration

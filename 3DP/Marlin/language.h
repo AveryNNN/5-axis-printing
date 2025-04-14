@@ -19,8 +19,8 @@
 
 #define PROTOCOL_VERSION "1.0"
 
-#define MACHINE_NAME "XD3DP_Device\t"
-#define FIRMWARE_URL "https://eme.xidian.edu.cn/"
+#define MACHINE_NAME "Conformal Printing"
+#define FIRMWARE_URL "https://github.com/AveryNNN/5-axis-printing"
 
 #define STRINGIFY_(n) #n
 #define STRINGIFY(n) STRINGIFY_(n)

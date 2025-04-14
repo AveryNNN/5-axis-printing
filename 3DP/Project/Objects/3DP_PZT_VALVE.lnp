@@ -101,7 +101,6 @@
 ".\objects\timer.o"
 ".\objects\delay.o"
 ".\objects\stepper_gpio.o"
-".\objects\leveling.o"
 --library_type=microlib --strict --scatter ".\Objects\3DP_PZT_VALVE.sct"
 --summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

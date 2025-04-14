@@ -6,27 +6,27 @@
 
 //引脚定义
 /*******************************************************/
-// 使用SKR PRO的UART1作为主串口
-#define SERIAL_USART                             USART1
-#define SERIAL_USART_CLK_ENABLE()                __HAL_RCC_USART1_CLK_ENABLE();
+// 使用SKR PRO的UART3作为主串口
+#define SERIAL_USART                             USART3
+#define SERIAL_USART_CLK_ENABLE()                __HAL_RCC_USART3_CLK_ENABLE();
 
-#define RCC_PERIPHCLK_UARTx                      RCC_PERIPHCLK_USART1
-#define RCC_UARTxCLKSOURCE_SYSCLK                RCC_USART1CLKSOURCE_SYSCLK
+#define RCC_PERIPHCLK_UARTx                      RCC_PERIPHCLK_USART3
+#define RCC_UARTxCLKSOURCE_SYSCLK                RCC_USART3CLKSOURCE_SYSCLK
 
-// 根据原理图，SKR PRO的UART1 RX连接到PA10
-#define SERIAL_USART_RX_GPIO_PORT                GPIOA
+// 根据原理图，SKR PRO的UART3 RX连接到PD9
+#define SERIAL_USART_RX_GPIO_PORT                GPIOD
 #define SERIAL_USART_RX_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOA_CLK_ENABLE()
-#define SERIAL_USART_RX_PIN                      GPIO_PIN_10
-#define SERIAL_USART_RX_AF                       GPIO_AF7_USART1
+#define SERIAL_USART_RX_PIN                      GPIO_PIN_9
+#define SERIAL_USART_RX_AF                       GPIO_AF7_USART3
 
-// 根据原理图，SKR PRO的UART1 TX连接到PA9
-#define SERIAL_USART_TX_GPIO_PORT                GPIOA
+// 根据原理图，SKR PRO的UART3 TX连接到PD8
+#define SERIAL_USART_TX_GPIO_PORT                GPIOD
 #define SERIAL_USART_TX_GPIO_CLK_ENABLE()        __HAL_RCC_GPIOA_CLK_ENABLE()
-#define SERIAL_USART_TX_PIN                      GPIO_PIN_9
-#define SERIAL_USART_TX_AF                       GPIO_AF7_USART1
+#define SERIAL_USART_TX_PIN                      GPIO_PIN_8
+#define SERIAL_USART_TX_AF                       GPIO_AF7_USART3
 
-#define SERIAL_USART_IRQHandler                  USART1_IRQHandler
-#define SERIAL_USART_IRQ                 		 USART1_IRQn
+#define SERIAL_USART_IRQHandler                USART3_IRQHandler
+#define SERIAL_USART_IRQ                 		 USART3_IRQn
 /************************************************************/
 
 

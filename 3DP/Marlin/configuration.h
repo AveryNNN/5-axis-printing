@@ -31,19 +31,19 @@
 #define DEFAULT_ACCELERATION					30			//[mm/sec^2]
 #define DEFAULT_RETRACT_ACCELERATION	30			//[mm/sec^2]
 
-#define DEFAULT_X_AXIS_STEPS_PER_UNIT	5000			//[steps/mm]
-#define DEFAULT_Y_AXIS_STEPS_PER_UNIT	5000			//[steps/mm]
-#define DEFAULT_Z_AXIS_STEPS_PER_UNIT	5000			//[steps/mm]
-#define DEFAULT_E_AXIS_STEPS_PER_UNIT	20			//[steps/mm]
+#define DEFAULT_X_AXIS_STEPS_PER_UNIT	500		//[steps/mm]
+#define DEFAULT_Y_AXIS_STEPS_PER_UNIT	500		//[steps/mm]
+#define DEFAULT_Z_AXIS_STEPS_PER_UNIT	500			//[steps/mm]
+#define DEFAULT_E_AXIS_STEPS_PER_UNIT	200			//[steps/mm]
 #define DEFAULT_A_AXIS_STEPS_PER_UNIT   20
 #define DEFAULT_B_AXIS_STEPS_PER_UNIT   20
 
-#define DEFAULT_X_AXIS_MAX_FEEDRATE		100			//[steps/sec]
-#define DEFAULT_Y_AXIS_MAX_FEEDRATE		100			//[steps/sec]
-#define DEFAULT_Z_AXIS_MAX_FEEDRATE		100			//[steps/sec]
-#define DEFAULT_E_AXIS_MAX_FEEDRATE		100			//[steps/sec]
-#define DEFAULT_A_AXIS_MAX_FEEDRATE     100
-#define DEFAULT_B_AXIS_MAX_FEEDRATE     100
+#define DEFAULT_X_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
+#define DEFAULT_Y_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
+#define DEFAULT_Z_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
+#define DEFAULT_E_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
+#define DEFAULT_A_AXIS_MAX_FEEDRATE     1000
+#define DEFAULT_B_AXIS_MAX_FEEDRATE     1000
 
 #define DEFAULT_X_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
 #define DEFAULT_Y_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
