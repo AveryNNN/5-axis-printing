@@ -915,11 +915,6 @@
               <FileType>1</FileType>
               <FilePath>..\Hardware\stepper_gpio.c</FilePath>
             </File>
-            <File>
-              <FileName>leveling.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Marlin\leveling.c</FilePath>
-            </File>
           </Files>
         </Group>
       </Groups>

@@ -153,6 +153,8 @@ void timer_isr(void)
 		current_block = plan_get_current_block();//获取新的插补运动块
 		if(current_block != NULL)
 		{
+			 printf("Debug: 获取到新运动块，步数X=%ld Y=%ld Z=%ld\r\n", 
+             current_block->steps_x, current_block->steps_y, current_block->steps_z);
 			steppers.set_plan_line_num(led_count++);
 			// 成功获取得到块
 			current_block->busy = true;
@@ -341,6 +343,7 @@ void timer_isr(void)
 			counter_x += current_block->steps_x;
 			if (counter_x > 0) 
 			{
+				printf("Debug: X轴脉冲生成，counter_x=%ld\r\n", counter_x);
 				steppers.create_one_x_axis_step();
 				counter_x -= current_block->step_event_count;
         count_position[X_AXIS]+=count_direction[X_AXIS];
@@ -377,7 +380,8 @@ void timer_isr(void)
         counter_e -= current_block->step_event_count;
         count_position[E_AXIS]+=count_direction[E_AXIS];
       }
-			 counter_a += current_block->steps_a;
+			 // A轴运动
+			counter_a += current_block->steps_a;
       if (counter_a > 0) {
         steppers.create_one_a_axis_step();
         counter_a -= current_block->step_event_count;

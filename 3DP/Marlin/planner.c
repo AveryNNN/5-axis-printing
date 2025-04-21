@@ -377,11 +377,14 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
   //this should be done after the wait, because otherwise a M92 code within the gcode disrupts this calculation somehow
   long target[NUM_AXIS];
   target[X_AXIS] = lround(x*axis_steps_per_unit[X_AXIS]);
+	printf("X steps: %ld for distance: %f (steps/mm: %f)\n", target[X_AXIS]-position[X_AXIS], delta_mm[X_AXIS], 
+	(float)(target[X_AXIS]-position[X_AXIS])/delta_mm[X_AXIS]);
   target[Y_AXIS] = lround(y*axis_steps_per_unit[Y_AXIS]);
   target[Z_AXIS] = lround(z*axis_steps_per_unit[Z_AXIS]);     
   target[E_AXIS] = lround(e*axis_steps_per_unit[E_AXIS]);
   target[A_AXIS] = lround(a*axis_steps_per_unit[A_AXIS]); // 添加A轴
   target[B_AXIS] = lround(b*axis_steps_per_unit[B_AXIS]); // 添加B轴
+	
 	// Prepare to set up new block
   block_t *block = &block_buffer[block_buffer_head];
 	// Mark block as not busy (Not executed by the stepper interrupt)
@@ -391,7 +394,7 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
 	block->steps_y = labs(target[Y_AXIS]-position[Y_AXIS]);
 	block->steps_z = labs(target[Z_AXIS]-position[Z_AXIS]);
 	block->steps_e = labs(target[E_AXIS]-position[E_AXIS]);
-    block->steps_a = labs(target[A_AXIS]-position[A_AXIS]); // 添加A轴
+  block->steps_a = labs(target[A_AXIS]-position[A_AXIS]); // 添加A轴
 	block->steps_b = labs(target[B_AXIS]-position[B_AXIS]); // 添加B轴
 	block->steps_e *= extrudemultiply;
 	block->steps_e /= 100;

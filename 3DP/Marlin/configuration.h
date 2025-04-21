@@ -31,12 +31,12 @@
 #define DEFAULT_ACCELERATION					30			//[mm/sec^2]
 #define DEFAULT_RETRACT_ACCELERATION	30			//[mm/sec^2]
 
-#define DEFAULT_X_AXIS_STEPS_PER_UNIT	500		//[steps/mm]
-#define DEFAULT_Y_AXIS_STEPS_PER_UNIT	500		//[steps/mm]
-#define DEFAULT_Z_AXIS_STEPS_PER_UNIT	500			//[steps/mm]
+#define DEFAULT_X_AXIS_STEPS_PER_UNIT	100		//[steps/mm]
+#define DEFAULT_Y_AXIS_STEPS_PER_UNIT	100		//[steps/mm]
+#define DEFAULT_Z_AXIS_STEPS_PER_UNIT	1600			//[steps/mm]
 #define DEFAULT_E_AXIS_STEPS_PER_UNIT	200			//[steps/mm]
-#define DEFAULT_A_AXIS_STEPS_PER_UNIT   20
-#define DEFAULT_B_AXIS_STEPS_PER_UNIT   20
+#define DEFAULT_A_AXIS_STEPS_PER_UNIT   500   	//[steps/round]
+#define DEFAULT_B_AXIS_STEPS_PER_UNIT   500		//[steps/round]
 
 #define DEFAULT_X_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_Y_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
@@ -44,6 +44,7 @@
 #define DEFAULT_E_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_A_AXIS_MAX_FEEDRATE     1000
 #define DEFAULT_B_AXIS_MAX_FEEDRATE     1000
+
 
 #define DEFAULT_X_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
 #define DEFAULT_Y_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
@@ -59,13 +60,15 @@
 #define X_AXIS	0
 #define Y_AXIS	1
 #define Z_AXIS	2
-#define E_AXIS	3
-#define A_AXIS 	4
-#define B_AXIS 	5
+#define E_AXIS	5
+#define A_AXIS 	3
+#define B_AXIS 	4
 
 // 通信数据
 #define MAX_CMD_SIZE 128
 #define BUFSIZE 8
+
+#define ROTARY_SPEED_FACTOR 5.0f  // 旋转轴速度因子，调整旋转轴的速度
 
 // 插补运动轴数
 #define NUM_AXIS 6
@@ -90,12 +93,24 @@
 #define min_software_endstops true  //If true, axis won't move to coordinates less than HOME_POS.
 #define max_software_endstops true  //If true, axis won't move to coordinates greater than the defined lengths below.
 	
-#define X_MAX_POS 100                                                                                          
-#define X_MIN_POS 0
-#define Y_MAX_POS 100
-#define Y_MIN_POS 0
-#define Z_MAX_POS 100
-#define Z_MIN_POS 0
+#define X_MAX_POS 150                                                                                         
+#define X_MIN_POS -150
+#define Y_MAX_POS 150
+#define Y_MIN_POS -150
+#define Z_MAX_POS 150
+#define Z_MIN_POS -150
+
+
+// 旋转轴角度限制
+#define A_MIN_ANGLE -60.0f  // A轴最小角度
+#define A_MAX_ANGLE 60.0f   // A轴最大角度
+#define B_MIN_ANGLE -180.0f  // B轴最小角度
+#define B_MAX_ANGLE 180.0f   // B轴最大角度
+
+// 旋转轴转换参数（每度对应的步数）
+#define STEPS_PER_DEGREE_A (DEFAULT_A_AXIS_STEPS_PER_UNIT / 360.0f)  // A轴每度的步数
+#define STEPS_PER_DEGREE_B (DEFAULT_B_AXIS_STEPS_PER_UNIT / 360.0f)  // B轴每度的步数
+
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)
 #define Y_MAX_LENGTH (Y_MAX_POS - Y_MIN_POS)

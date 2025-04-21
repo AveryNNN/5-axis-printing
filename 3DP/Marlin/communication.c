@@ -10,15 +10,15 @@ static unsigned int previous_millis_cmd = 0;
 static unsigned long max_inactive_time = 0;
 static unsigned long stepper_inactive_time = DEFAULT_STEPPER_DEACTIVE_TIME*1000l;
 // 运动指令
-const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'E', 'A', 'B'};
+const char axis_codes[NUM_AXIS] = {'X', 'Y', 'Z', 'A', 'B','E'};
 float offset[3] = {0.0, 0.0, 0.0};
 float destination[NUM_AXIS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float current_position[NUM_AXIS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 float add_homeing[NUM_AXIS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
 
 
-extern float min_pos[3];
-extern float max_pos[3];
+extern float min_pos[5];
+extern float max_pos[5];
 
 #define AXIS_RELATIVE_MODES {false, false, false, false}
 
@@ -246,12 +246,23 @@ void get_coordinates()
 	int8_t i;
   volatile unsigned char seen[NUM_AXIS] = {false, false, false, false, false, false};
  for(i=0; i < NUM_AXIS; i++) {
-    if(code_seen(axis_codes[i])) {
-      destination[i] = (float)code_value() + (axis_relative_modes[i] || relative_mode)*current_position[i];
-      seen[i]=true;
+        if(code_seen(axis_codes[i])) {
+            if(i == A_AXIS || i == B_AXIS) {
+                // 旋转轴使用角度值
+                float angle_value = (float)code_value();
+                
+                // 处理角度值（角度可以为任意值，但实际上会考虑模360度）
+                destination[i] = (axis_relative_modes[i] || relative_mode) ? 
+                                 current_position[i] + angle_value : 
+                                 angle_value;
+            } else {
+                // 线性轴使用距离值
+                destination[i] = (float)code_value() + (axis_relative_modes[i] || relative_mode)*current_position[i];
+            }
+            seen[i]=true;
+        }
+        else destination[i] = current_position[i];
     }
-    else destination[i] = current_position[i];
-  }
   if(code_seen('F')) 
 	{
     next_feedrate = code_value();
@@ -287,17 +298,17 @@ void clamp_to_software_endstops(float target[NUM_AXIS])
     if (target[Y_AXIS] < min_pos[Y_AXIS]) target[Y_AXIS] = min_pos[Y_AXIS];
     if (target[Z_AXIS] < min_pos[Z_AXIS]) target[Z_AXIS] = min_pos[Z_AXIS];
     // A轴和B轴通常是旋转轴，可能不需要软件限位，但如果需要可以添加
-    // if (target[A_AXIS] < min_pos[A_AXIS]) target[A_AXIS] = min_pos[A_AXIS];
-    // if (target[B_AXIS] < min_pos[B_AXIS]) target[B_AXIS] = min_pos[B_AXIS];
-  }
+    if (target[A_AXIS] < A_MIN_ANGLE) target[A_AXIS] = A_MIN_ANGLE;
+    if (target[B_AXIS] < B_MIN_ANGLE) target[B_AXIS] = B_MIN_ANGLE;
+	}
 
   if (max_software_endstops) {
     if (target[X_AXIS] > max_pos[X_AXIS]) target[X_AXIS] = max_pos[X_AXIS];
     if (target[Y_AXIS] > max_pos[Y_AXIS]) target[Y_AXIS] = max_pos[Y_AXIS];
     if (target[Z_AXIS] > max_pos[Z_AXIS]) target[Z_AXIS] = max_pos[Z_AXIS];
     // A轴和B轴的最大限位同上
-    // if (target[A_AXIS] > max_pos[A_AXIS]) target[A_AXIS] = max_pos[A_AXIS];
-    // if (target[B_AXIS] > max_pos[B_AXIS]) target[B_AXIS] = max_pos[B_AXIS];
+		if (target[A_AXIS] > A_MAX_ANGLE) target[A_AXIS] = A_MAX_ANGLE;
+		if (target[B_AXIS] > B_MAX_ANGLE) target[B_AXIS] = B_MAX_ANGLE;
   }
 }
 

@@ -33,20 +33,34 @@ void Delay(__IO uint32_t nCount)	 //简单的延时函数
 	
 extern float angle_a,angle_b;
 
-//void test_x_motor(void) {
-//  X_ENABLE_PIN = 0;  // 使能
-//  X_DIR_PIN = 1;     // 设置方向
-//	printf("kaizhuan\n");
-//  
-//  for(int i=0; i<1000; i++) {
-//     X_STEP_PIN = 1;
-//    HAL_Delay(100);
-//		printf("pin_1");
-//    X_STEP_PIN = 0;
-//    HAL_Delay(100);
-//		printf("pin_0");
-//  }
-//}
+
+
+void test_x_motor(void)
+{
+  printf("测试X轴电机开始\r\n");
+  
+  // 使能X轴
+  X_ENABLE_PIN = STEPPER_ENABLE_VOL;
+  printf("X电机使能完成\r\n");
+  
+  // 设置正方向
+  X_DIR_PIN = POSITIVE_X_DIR;
+  printf("X方向设置完成\r\n");
+  
+  // 生成1000个脉冲
+  for(int i=0; i<1000; i++)
+  {
+    X_STEP_PIN = 1;
+    HAL_Delay(50);  // 使用较长延迟确保脉冲足够宽
+    X_STEP_PIN = 0;
+    HAL_Delay(50);
+    
+    if(i % 100 == 0)
+      printf("已生成%d个脉冲\r\n", i);
+  }
+  
+  printf("测试X轴电机结束\r\n");
+}
 
 
 /**
@@ -88,8 +102,8 @@ int main(void)
   while(1)
   {
    bsp_command_process();
-	//test_x_motor(void)；
-
+		//test_x_motor();
+	
   }
 }
 
