@@ -3579,8 +3579,8 @@
       </Doc>
       <Doc>
         <Name>..\Marlin\configuration.h</Name>
-        <ColumnNumber>43</ColumnNumber>
-        <TopLine>22</TopLine>
+        <ColumnNumber>44</ColumnNumber>
+        <TopLine>34</TopLine>
         <CurrentLine>39</CurrentLine>
         <Folding>1</Folding>
         <ContractedFolders></ContractedFolders>

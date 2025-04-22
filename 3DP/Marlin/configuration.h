@@ -35,8 +35,8 @@
 #define DEFAULT_Y_AXIS_STEPS_PER_UNIT	100		//[steps/mm]
 #define DEFAULT_Z_AXIS_STEPS_PER_UNIT	1600			//[steps/mm]
 #define DEFAULT_E_AXIS_STEPS_PER_UNIT	200			//[steps/mm]
-#define DEFAULT_A_AXIS_STEPS_PER_UNIT   500   	//[steps/round]
-#define DEFAULT_B_AXIS_STEPS_PER_UNIT   500		//[steps/round]
+#define DEFAULT_A_AXIS_STEPS_PER_UNIT   3200   	//[steps/round]
+#define DEFAULT_B_AXIS_STEPS_PER_UNIT   3200		//[steps/round]
 
 #define DEFAULT_X_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_Y_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
