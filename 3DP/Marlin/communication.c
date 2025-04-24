@@ -267,7 +267,7 @@ void get_coordinates()
 	{
     next_feedrate = code_value();
     if(next_feedrate > 0.0f) feedrate = next_feedrate;
-    if(next_feedrate > 1200.0f) feedrate = 1200;
+    if(next_feedrate > 2000.0f) feedrate = 2000;
   }
 }
 void get_arc_coordinates(void)
