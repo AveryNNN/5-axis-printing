@@ -35,23 +35,23 @@
 #define DEFAULT_Y_AXIS_STEPS_PER_UNIT	100		//[steps/mm]
 #define DEFAULT_Z_AXIS_STEPS_PER_UNIT	1600			//[steps/mm]
 #define DEFAULT_E_AXIS_STEPS_PER_UNIT	200			//[steps/mm]
-#define DEFAULT_A_AXIS_STEPS_PER_UNIT   3200   	//[steps/round]
-#define DEFAULT_B_AXIS_STEPS_PER_UNIT   3200		//[steps/round]
+#define DEFAULT_A_AXIS_STEPS_PER_UNIT   1706/360.0f 	//[steps/degree]
+#define DEFAULT_B_AXIS_STEPS_PER_UNIT   1706/360.0f		//[steps/degree]
 
 #define DEFAULT_X_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_Y_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_Z_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
 #define DEFAULT_E_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
-#define DEFAULT_A_AXIS_MAX_FEEDRATE     1000
-#define DEFAULT_B_AXIS_MAX_FEEDRATE     1000
+#define DEFAULT_A_AXIS_MAX_FEEDRATE     2000
+#define DEFAULT_B_AXIS_MAX_FEEDRATE     2000
 
 
 #define DEFAULT_X_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
 #define DEFAULT_Y_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
 #define DEFAULT_Z_AXIS_MAX_ACCELERATION		40	//[mm/sec^2]
 #define DEFAULT_E_AXIS_MAX_ACCELERATION		40	//[mm/sec^2]
-#define DEFAULT_A_AXIS_MAX_ACCELERATION 20
-#define DEFAULT_B_AXIS_MAX_ACCELERATION 20
+#define DEFAULT_A_AXIS_MAX_ACCELERATION 	50
+#define DEFAULT_B_AXIS_MAX_ACCELERATION 	50
 
 #define DEFAULT_DROP_SEGMENTS					5				// 运动可忽略的步数
 
@@ -76,15 +76,15 @@
 #define TIMER_FREQ 2000000u
 
 #define NEGATIVE_X_DIR 0    // for Mendel set to false, for Orca set to true
-#define NEGATIVE_Y_DIR 1    // for Mendel set to true, for Orca set to false
-#define NEGATIVE_Z_DIR 1    // for Mendel set to false, for Orca set to true
+#define NEGATIVE_Y_DIR 0    // for Mendel set to true, for Orca set to false
+#define NEGATIVE_Z_DIR 0    // for Mendel set to false, for Orca set to true
 #define NEGATIVE_E_DIR 0    // for Mendel set to false, for Orca set to true
 #define NEGATIVE_A_DIR 0
 #define NEGATIVE_B_DIR 0
 
 #define POSITIVE_X_DIR 1    // for Mendel set to false, for Orca set to true
-#define POSITIVE_Y_DIR 0    // for Mendel set to true, for Orca set to false
-#define POSITIVE_Z_DIR 0    // for Mendel set to false, for Orca set to true
+#define POSITIVE_Y_DIR 1    // for Mendel set to true, for Orca set to false
+#define POSITIVE_Z_DIR 1    // for Mendel set to false, for Orca set to true
 #define POSITIVE_E_DIR 1    // for Mendel set to false, for Orca set to true
 #define POSITIVE_A_DIR 1
 #define POSITIVE_B_DIR 1
@@ -102,14 +102,11 @@
 
 
 // 旋转轴角度限制
-#define A_MIN_ANGLE -60.0f  // A轴最小角度
-#define A_MAX_ANGLE 60.0f   // A轴最大角度
+#define A_MIN_ANGLE -90.0f  // A轴最小角度
+#define A_MAX_ANGLE 90.0f   // A轴最大角度
 #define B_MIN_ANGLE -180.0f  // B轴最小角度
 #define B_MAX_ANGLE 180.0f   // B轴最大角度
 
-// 旋转轴转换参数（每度对应的步数）
-#define STEPS_PER_DEGREE_A (DEFAULT_A_AXIS_STEPS_PER_UNIT / 360.0f)  // A轴每度的步数
-#define STEPS_PER_DEGREE_B (DEFAULT_B_AXIS_STEPS_PER_UNIT / 360.0f)  // B轴每度的步数
 
 
 #define X_MAX_LENGTH (X_MAX_POS - X_MIN_POS)

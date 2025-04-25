@@ -377,8 +377,7 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
   //this should be done after the wait, because otherwise a M92 code within the gcode disrupts this calculation somehow
   long target[NUM_AXIS];
   target[X_AXIS] = lround(x*axis_steps_per_unit[X_AXIS]);
-	printf("X steps: %ld for distance: %f (steps/mm: %f)\n", target[X_AXIS]-position[X_AXIS], delta_mm[X_AXIS], 
-	(float)(target[X_AXIS]-position[X_AXIS])/delta_mm[X_AXIS]);
+	//printf("X steps: %ld for distance: %f (steps/mm: %f)\n", target[X_AXIS]-position[X_AXIS], delta_mm[X_AXIS], (float)(target[X_AXIS]-position[X_AXIS])/delta_mm[X_AXIS]);
   target[Y_AXIS] = lround(y*axis_steps_per_unit[Y_AXIS]);
   target[Z_AXIS] = lround(z*axis_steps_per_unit[Z_AXIS]);     
   target[E_AXIS] = lround(e*axis_steps_per_unit[E_AXIS]);
@@ -475,6 +474,12 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
 	{
 		 block->millimeters = sqrt(square(delta_mm[X_AXIS]) + square(delta_mm[Y_AXIS]) + square(delta_mm[Z_AXIS]));
 	}
+	
+	
+	
+	
+	
+	
 	// Inverse millimeters to remove multiple divides 
 	float inverse_millimeters = 1.0f/block->millimeters; 
 	// Calculate speed in mm/second for each axis. No divide by zero due to previous checks.

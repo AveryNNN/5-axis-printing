@@ -58,7 +58,7 @@ static void TIM_Mode_Config(void)
 	MOTION_TIM_CLK_ENABLE(); 
 	TIME_TIM_CLK_ENABLE();
 
-	TIM_TimeMotionStructure.Instance = MOTION_TIM;
+	TIM_TimeMotionStructure.Instance = MOTION_TIM;//0.03s进一次中断
 	/* 累计 TIM_Period个后产生一个更新或者中断*/		
 	//当定时器从0计数到4999，即为5000次，为一个定时周期
 	TIM_TimeMotionStructure.Init.Period = 65536-1;       

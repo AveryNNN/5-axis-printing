@@ -35,31 +35,55 @@ extern float angle_a,angle_b;
 
 
 
-void test_x_motor(void)
+void test_motor(void)
 {
-  printf("测试X轴电机开始\r\n");
+  printf("测试B轴电机开始\r\n");
   
   // 使能X轴
-  X_ENABLE_PIN = STEPPER_ENABLE_VOL;
-  printf("X电机使能完成\r\n");
+  B_ENABLE_PIN = STEPPER_ENABLE_VOL;
+  printf("B电机使能完成\r\n");
   
   // 设置正方向
-  X_DIR_PIN = POSITIVE_X_DIR;
-  printf("X方向设置完成\r\n");
+  B_DIR_PIN = POSITIVE_B_DIR;
+  printf("B方向设置完成\r\n");
   
   // 生成1000个脉冲
   for(int i=0; i<1000; i++)
   {
-    X_STEP_PIN = 1;
-    HAL_Delay(50);  // 使用较长延迟确保脉冲足够宽
-    X_STEP_PIN = 0;
-    HAL_Delay(50);
+    B_STEP_PIN = 1;
+    soft_delay_100us();  // 使用较长延迟确保脉冲足够宽
+    B_STEP_PIN = 0;
+    soft_delay_100us();
     
     if(i % 100 == 0)
       printf("已生成%d个脉冲\r\n", i);
   }
   
-  printf("测试X轴电机结束\r\n");
+  printf("测试B轴电机结束\r\n");
+	
+	printf("测试A轴电机开始\r\n");
+  
+  // 使能X轴
+  A_ENABLE_PIN = STEPPER_ENABLE_VOL;
+  printf("A电机使能完成\r\n");
+  
+  // 设置正方向
+  A_DIR_PIN = POSITIVE_B_DIR;
+  printf("A方向设置完成\r\n");
+  
+  // 生成1000个脉冲
+  for(int i=0; i<1000; i++)
+  {
+    A_STEP_PIN = 1;
+    soft_delay_100us();  // 使用较长延迟确保脉冲足够宽
+    A_STEP_PIN = 0;
+    soft_delay_100us();
+    
+    if(i % 100 == 0)
+      printf("已生成%d个脉冲\r\n", i);
+  }
+  
+  printf("测试B轴电机结束\r\n");
 }
 
 
@@ -102,7 +126,7 @@ int main(void)
   while(1)
   {
    bsp_command_process();
-		//test_x_motor();
+	//test_motor();
 	
   }
 }

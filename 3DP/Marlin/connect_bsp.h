@@ -54,6 +54,8 @@ void bsp_stepper_init(void);
 	void bsp_stepper_timer_isr(void);
 	
 	void soft_delay_us(void);
+	void soft_delay_10us(void);
+	void soft_delay_100us(void);
 	// A 轴和 B 轴相关函数声明
 void bsp_enable_a_stepper(void);
 void bsp_enable_b_stepper(void);

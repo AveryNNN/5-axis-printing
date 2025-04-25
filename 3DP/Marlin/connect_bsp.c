@@ -394,8 +394,16 @@ void soft_delay_us(void)
 }
 
 
+void soft_delay_10us(void)
+{
+	int temp = 5000;
+	while(temp--);
+}
 
 
-
-
+void soft_delay_100us(void)
+{
+	int temp = 50000;
+	while(temp--);
+}
 
