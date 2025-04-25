@@ -145,6 +145,7 @@ void trapezoid_generator_reset(void)
 }
 //实现1个流水灯 用于表示查不块正在运动
 static unsigned int led_count=0;
+static unsigned long steps_completed[NUM_AXIS] = {0};
 void timer_isr(void)
 {
 	if(current_block == NULL)
@@ -162,19 +163,26 @@ void timer_isr(void)
       counter_y = counter_x;
       counter_z = counter_x;
       counter_e = counter_x;
-      step_events_completed = 0;
-			if(current_block->steps_z > 0) 
-			{
-          steppers.enable_z_stepper();
-          steppers.set_timer_autoreload(2000-1); //1ms wait
-          return;
+			
+			
+
+      // 重置已完成步数计数器 (新增)
+
+      for(int i=0; i<NUM_AXIS; i++) {
+        steps_completed[i] = 0;
       }
-		}
-		else// 当前插补运动块环形缓存中没有待插补指令
-		{
-			steppers.set_timer_autoreload(2000-1);
-		}
-	}
+      
+      step_events_completed = 0;
+      
+      if(current_block->steps_z > 0) {
+        steppers.enable_z_stepper();
+        steppers.set_timer_autoreload(2000-1); //1ms wait
+        return;
+      }
+    } else {
+      steppers.set_timer_autoreload(2000-1);
+    }
+  }
 	// 若当前插补块正在插补
 	if(current_block != NULL)
 	{
@@ -335,64 +343,68 @@ void timer_isr(void)
 		}
 		//输出运动脉冲
 		
-		uint8_t i;
-    for(i=0; i < step_loops; i++) 
-		{
-			// X轴运动
-			counter_x += current_block->steps_x;
-			if (counter_x > 0) 
-			{
-				printf("Debug: X轴脉冲生成，counter_x=%ld\r\n", counter_x);
-				steppers.create_one_x_axis_step();// 发一个步进脉冲
-				counter_x -= current_block->step_event_count;
-        count_position[X_AXIS]+=count_direction[X_AXIS];// 位置累计
-			}
-			// Y轴运动
-			counter_y += current_block->steps_y;
-			if (counter_y > 0) 
-			{
-				steppers.create_one_y_axis_step();
-				counter_y -= current_block->step_event_count;
-        count_position[Y_AXIS]+=count_direction[Y_AXIS];
-			}
-			// Z轴运动
-			counter_z += current_block->steps_z;
-			if(counter_z > 0)//说明需要输出一个运动脉冲
-			{
-				steppers.create_one_z_axis_step();
-				counter_z -= current_block->step_event_count;
-        count_position[Z_AXIS]+=count_direction[Z_AXIS];
-			}
-			// E轴运动
-			if(current_block->steps_e > 0)
-			{
-				PRESS_STEP_PIN = 1;
-			}	
-			else
-			{
-				PRESS_STEP_PIN = 0;
-			}
-			counter_e += current_block->steps_e;
-      if (counter_e > 0) 
-			{
+
+		 // 输出运动脉冲
+    uint8_t i;
+    for(i=0; i < step_loops; i++) {
+      // X轴运动，检查是否完成全部步数
+      counter_x += current_block->steps_x;
+      if (counter_x > 0 && steps_completed[X_AXIS] < current_block->steps_x) {
+        steppers.create_one_x_axis_step();
+        counter_x -= current_block->step_event_count;
+        count_position[X_AXIS] += count_direction[X_AXIS];
+        steps_completed[X_AXIS]++;
+      }
+      
+      // Y轴运动，检查是否完成全部步数
+      counter_y += current_block->steps_y;
+      if (counter_y > 0 && steps_completed[Y_AXIS] < current_block->steps_y) {
+        steppers.create_one_y_axis_step();
+        counter_y -= current_block->step_event_count;
+        count_position[Y_AXIS] += count_direction[Y_AXIS];
+        steps_completed[Y_AXIS]++;
+      }
+      
+      // Z轴运动，检查是否完成全部步数
+      counter_z += current_block->steps_z;
+      if(counter_z > 0 && steps_completed[Z_AXIS] < current_block->steps_z) {
+        steppers.create_one_z_axis_step();
+        counter_z -= current_block->step_event_count;
+        count_position[Z_AXIS] += count_direction[Z_AXIS];
+        steps_completed[Z_AXIS]++;
+      }
+      
+      // E轴运动
+      if(current_block->steps_e > 0) {
+        PRESS_STEP_PIN = 1;
+      } else {
+        PRESS_STEP_PIN = 0;
+      }
+      
+      counter_e += current_block->steps_e;
+      if (counter_e > 0 && steps_completed[E_AXIS] < current_block->steps_e) {
         steppers.create_one_e_axis_step();
         counter_e -= current_block->step_event_count;
-        count_position[E_AXIS]+=count_direction[E_AXIS];
+        count_position[E_AXIS] += count_direction[E_AXIS];
+        steps_completed[E_AXIS]++;
       }
-			 // A轴运动
-			counter_a += current_block->steps_a;
-      if (counter_a > 0) {
+      
+      // A轴运动，检查是否完成全部步数
+      counter_a += current_block->steps_a;
+      if (counter_a > 0 && steps_completed[A_AXIS] < current_block->steps_a) {
         steppers.create_one_a_axis_step();
         counter_a -= current_block->step_event_count;
         count_position[A_AXIS] += count_direction[A_AXIS];
+        steps_completed[A_AXIS]++;
       }
       
-      // B轴运动
+      // B轴运动，检查是否完成全部步数
       counter_b += current_block->steps_b;
-      if (counter_b > 0) {
+      if (counter_b > 0 && steps_completed[B_AXIS] < current_block->steps_b) {
         steppers.create_one_b_axis_step();
         counter_b -= current_block->step_event_count;
         count_position[B_AXIS] += count_direction[B_AXIS];
+        steps_completed[B_AXIS]++;
       }
       
       step_events_completed += 1;

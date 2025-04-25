@@ -35,15 +35,15 @@
 #define DEFAULT_Y_AXIS_STEPS_PER_UNIT	100		//[steps/mm]
 #define DEFAULT_Z_AXIS_STEPS_PER_UNIT	1600			//[steps/mm]
 #define DEFAULT_E_AXIS_STEPS_PER_UNIT	200			//[steps/mm]
-#define DEFAULT_A_AXIS_STEPS_PER_UNIT   1706/360.0f 	//[steps/degree]
-#define DEFAULT_B_AXIS_STEPS_PER_UNIT   1706/360.0f		//[steps/degree]
+#define DEFAULT_A_AXIS_STEPS_PER_UNIT   66.667 	//[steps/degree]
+#define DEFAULT_B_AXIS_STEPS_PER_UNIT   66.667		//[steps/degree]
 
-#define DEFAULT_X_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
-#define DEFAULT_Y_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
-#define DEFAULT_Z_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
-#define DEFAULT_E_AXIS_MAX_FEEDRATE		1000			//[steps/sec]
-#define DEFAULT_A_AXIS_MAX_FEEDRATE     2000
-#define DEFAULT_B_AXIS_MAX_FEEDRATE     2000
+#define DEFAULT_X_AXIS_MAX_FEEDRATE		10000			//[steps/sec]
+#define DEFAULT_Y_AXIS_MAX_FEEDRATE		10000			//[steps/sec]
+#define DEFAULT_Z_AXIS_MAX_FEEDRATE		10000			//[steps/sec]
+#define DEFAULT_E_AXIS_MAX_FEEDRATE		5000			//[steps/sec]
+#define DEFAULT_A_AXIS_MAX_FEEDRATE     5000
+#define DEFAULT_B_AXIS_MAX_FEEDRATE     5000
 
 
 #define DEFAULT_X_AXIS_MAX_ACCELERATION		20	//[mm/sec^2]
@@ -102,8 +102,8 @@
 
 
 // 旋转轴角度限制
-#define A_MIN_ANGLE -90.0f  // A轴最小角度
-#define A_MAX_ANGLE 90.0f   // A轴最大角度
+#define A_MIN_ANGLE -180.0f  // A轴最小角度
+#define A_MAX_ANGLE 180.0f   // A轴最大角度
 #define B_MIN_ANGLE -180.0f  // B轴最小角度
 #define B_MAX_ANGLE 180.0f   // B轴最大角度
 

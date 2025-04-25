@@ -4,6 +4,7 @@
 #include "timer.h"
 #include "stepper_gpio.h"
 #include "gpio_config.h"
+#include "stm32f4xx_hal.h" 
 
 //外部主进程调用模块插补函数
 	void bsp_init(void)
@@ -312,9 +313,9 @@ void bsp_disable_b_stepper(void)
 void bsp_create_one_b_axis_step(void)
 {
   B_STEP_PIN = 1;
-  soft_delay_us();
+  HAL_Delay_us(3);
   B_STEP_PIN = 0;
-  soft_delay_us();
+  HAL_Delay_us(3);
   return;
 }
 	// 运动方向
@@ -407,3 +408,17 @@ void soft_delay_100us(void)
 	while(temp--);
 }
 
+void DWT_Init(void)
+{
+    CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;     // 开启 DWT
+    DWT->CYCCNT = 0;                                     // 清零计数器
+    DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;                // 使能
+}
+
+void HAL_Delay_us(uint32_t us)
+{
+    uint32_t startTick = DWT->CYCCNT;
+    uint32_t delayTicks = us * (HAL_RCC_GetHCLKFreq() / 1000000);
+
+    while ((DWT->CYCCNT - startTick) < delayTicks);
+}

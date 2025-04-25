@@ -39,7 +39,8 @@ typedef struct
   long acceleration_rate;                   // The acceleration rate used for acceleration calculation
   unsigned char direction_bits;             // The direction bit set for this block (refers to *_DIRECTION_BIT in config.h)
   unsigned char active_extruder;            // Selects the active extruder
-
+	float speed_percentage;                   // 最大速度百分比 (0.0-1.0)
+	
   // Fields used by the motion planner to manage acceleration
 	// float speed_x, speed_y, speed_z, speed_e;       // Nominal mm/sec for each axis
   float nominal_speed;                               // The nominal speed for this block in mm/sec 

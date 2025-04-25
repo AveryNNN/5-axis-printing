@@ -61,17 +61,17 @@
 //=============================public variables ============================
 //===========================================================================
 unsigned long axis_steps_per_sqr_second[NUM_AXIS];
-float axis_steps_per_unit[NUM_AXIS] = {DEFAULT_X_AXIS_STEPS_PER_UNIT,DEFAULT_Y_AXIS_STEPS_PER_UNIT,DEFAULT_Z_AXIS_STEPS_PER_UNIT,DEFAULT_E_AXIS_STEPS_PER_UNIT,DEFAULT_A_AXIS_STEPS_PER_UNIT,DEFAULT_B_AXIS_STEPS_PER_UNIT};
+float axis_steps_per_unit[NUM_AXIS] = {DEFAULT_X_AXIS_STEPS_PER_UNIT,DEFAULT_Y_AXIS_STEPS_PER_UNIT,DEFAULT_Z_AXIS_STEPS_PER_UNIT,DEFAULT_A_AXIS_STEPS_PER_UNIT,DEFAULT_B_AXIS_STEPS_PER_UNIT,DEFAULT_E_AXIS_STEPS_PER_UNIT};
 long position[NUM_AXIS] 		= {0l,0l,0l,0l,0l,0l};//当前位置/step
 static float previous_unit_vec[3]={0.0,0.0,0.0};
 static float previous_speed[NUM_AXIS] = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}; // Speed of previous path line segment
 static float previous_nominal_speed; // Nominal speed of previous path line segment
-unsigned long max_acceleration_units_per_sq_second[NUM_AXIS]={DEFAULT_X_AXIS_MAX_ACCELERATION,DEFAULT_Y_AXIS_MAX_ACCELERATION,DEFAULT_Z_AXIS_MAX_ACCELERATION,DEFAULT_E_AXIS_MAX_ACCELERATION,DEFAULT_A_AXIS_MAX_ACCELERATION, DEFAULT_B_AXIS_MAX_ACCELERATION};
+unsigned long max_acceleration_units_per_sq_second[NUM_AXIS]={DEFAULT_X_AXIS_MAX_ACCELERATION,DEFAULT_Y_AXIS_MAX_ACCELERATION,DEFAULT_Z_AXIS_MAX_ACCELERATION,DEFAULT_A_AXIS_MAX_ACCELERATION, DEFAULT_B_AXIS_MAX_ACCELERATION,DEFAULT_E_AXIS_MAX_ACCELERATION};
 
 int extrudemultiply 				= 100;//100->1.0 200->2.0
 const unsigned int dropsegments = DEFAULT_DROP_SEGMENTS;//可忽略运动步长
 float delta_mm[NUM_AXIS] 		= {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
-float max_feedrate[NUM_AXIS]= {DEFAULT_X_AXIS_MAX_FEEDRATE, DEFAULT_Y_AXIS_MAX_FEEDRATE, DEFAULT_Z_AXIS_MAX_FEEDRATE, DEFAULT_E_AXIS_MAX_FEEDRATE,DEFAULT_A_AXIS_MAX_FEEDRATE,DEFAULT_B_AXIS_MAX_FEEDRATE};
+float max_feedrate[NUM_AXIS]= {DEFAULT_X_AXIS_MAX_FEEDRATE, DEFAULT_Y_AXIS_MAX_FEEDRATE, DEFAULT_Z_AXIS_MAX_FEEDRATE, DEFAULT_A_AXIS_MAX_FEEDRATE,DEFAULT_B_AXIS_MAX_FEEDRATE,DEFAULT_E_AXIS_MAX_FEEDRATE};
 
 float minimumfeedrate				= DEFAULT_MINIMUMFEEDRATE;
 float mintravelfeedrate			= DEFAULT_MINIMUMFEEDRATE;
@@ -357,6 +357,8 @@ void plan_init(void)
 
 void plan_buffer_line(const float x, const float y, const float z, const float e, const float a, const float b, float feed_rate, const uint8_t extruder)
 {
+	
+	
 	/**
 	*	@step:(1)监测插补块环形队列是否还有存储空间，并持续等待到有空间为止，此处后续可使用操作系统线程进行阻塞挂起
 	*/
@@ -382,6 +384,7 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
   target[Z_AXIS] = lround(z*axis_steps_per_unit[Z_AXIS]);     
   target[E_AXIS] = lround(e*axis_steps_per_unit[E_AXIS]);
   target[A_AXIS] = lround(a*axis_steps_per_unit[A_AXIS]); // 添加A轴
+	//printf("target[A_AXIS]: %ld", target[A_AXIS]);
   target[B_AXIS] = lround(b*axis_steps_per_unit[B_AXIS]); // 添加B轴
 	
 	// Prepare to set up new block
@@ -461,6 +464,7 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
 	delta_mm[Z_AXIS] = (target[Z_AXIS]-position[Z_AXIS])/axis_steps_per_unit[Z_AXIS];
   delta_mm[E_AXIS] = ((target[E_AXIS]-position[E_AXIS])/axis_steps_per_unit[E_AXIS])*extrudemultiply/100.0f;
   delta_mm[A_AXIS] = (target[A_AXIS]-position[A_AXIS])/axis_steps_per_unit[A_AXIS]; // 添加A轴
+	//printf("距离: %f\n", delta_mm[A_AXIS]);
   delta_mm[B_AXIS] = (target[B_AXIS]-position[B_AXIS])/axis_steps_per_unit[B_AXIS]; // 添加B轴
   
 	/**
@@ -476,82 +480,100 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
 	}
 	
 	
+	 
+  // 计算 inverse_millimeters
+  float inverse_millimeters = 1.0f / block->millimeters; 
+	
+	// 添加在运动规划时需要的 current_speed
+  float current_speed[NUM_AXIS]; 
 	
 	
 	
-	
-	// Inverse millimeters to remove multiple divides 
-	float inverse_millimeters = 1.0f/block->millimeters; 
-	// Calculate speed in mm/second for each axis. No divide by zero due to previous checks.
-	// feed_rate:[mm/sec]
-  float inverse_second = feed_rate * inverse_millimeters;	//[1/sec]时间增量
-	/**
-	*	@step:(8)检测插补块环形队列是否有数据，若数据开始情况时，将进给速度逐渐减小，正常情况下不做处理
-	*/
-	// the number of move line in queued
-	int16_t moves_queued=(block_buffer_head-block_buffer_tail + BLOCK_BUFFER_SIZE) & (BLOCK_BUFFER_SIZE - 1);
-	// slow down when de buffer starts to empty, rather than wait at the corner for a buffer refill
-	if(moves_queued < (BLOCK_BUFFER_SIZE * 0.5) && moves_queued > 1)
-	{
-    feed_rate = feed_rate*moves_queued / (BLOCK_BUFFER_SIZE * 0.5); //降速
-	}
-	/**
-	*	@step:(9)计算当前插补块的运动速度和对应的脉冲速率
-	*/
-	// Set current block's speed and pluse rate
-	block->nominal_speed = block->millimeters * inverse_second; // (mm/sec) Always > 0
-  block->nominal_rate = ceil(block->step_event_count * inverse_second); // (step/sec) Always > 0 向上取整
-	// Calculate and limit speed in mm/sec for each axis
-  float current_speed[NUM_AXIS];
-  float speed_factor = 1.0; //factor <=1 do decrease speed
-  for(int16_t i=0; i < NUM_AXIS; i++)
-  {
-    current_speed[i] = delta_mm[i] * inverse_second;//各轴对应的速度[mm/sec]
-    if(fabs(current_speed[i]) > max_feedrate[i])//检测是否有运动轴速度大于自身所允许的最大速度
-		{
-      speed_factor = min(speed_factor, max_feedrate[i] / fabs(current_speed[i]));//若有，则计算最大允许速度与当前速度的比值，其值必然＜1.0f
-		}
+	 // **新增代码**: 计算速度百分比
+  float speed_percentage = feed_rate / 100.0f; // F值作为百分比
+  
+  // 限制百分比范围
+  if (speed_percentage > 1.0f) speed_percentage = 1.0f;
+  if (speed_percentage < 0.05f) speed_percentage = 0.05f; // 最低5%速度
+  
+  block->speed_percentage = speed_percentage;
+  
+  // 计算各轴完成运动所需时间
+  float time_x = (block->steps_x > 0) ? 
+                fabs(delta_mm[X_AXIS]) / (max_feedrate[X_AXIS] * speed_percentage / 60.0f) : 0;
+  float time_y = (block->steps_y > 0) ? 
+                fabs(delta_mm[Y_AXIS]) / (max_feedrate[Y_AXIS] * speed_percentage / 60.0f) : 0;
+  float time_z = (block->steps_z > 0) ? 
+                fabs(delta_mm[Z_AXIS]) / (max_feedrate[Z_AXIS] * speed_percentage / 60.0f) : 0;
+  float time_e = (block->steps_e > 0) ? 
+                fabs(delta_mm[E_AXIS]) / (max_feedrate[E_AXIS] * speed_percentage / 60.0f) : 0;
+  float time_a = (block->steps_a > 0) ? 
+                fabs(delta_mm[A_AXIS]) / (max_feedrate[A_AXIS] * speed_percentage / 60.0f) : 0;
+  float time_b = (block->steps_b > 0) ? 
+                fabs(delta_mm[B_AXIS]) / (max_feedrate[B_AXIS] * speed_percentage / 60.0f) : 0;
+  
+  // 选择最长时间作为运动时间
+  float max_time = max(time_x, max(time_y, max(time_z, max(time_e, max(time_a, time_b)))));
+  
+  // 如果所有时间都为0，设置一个最小值
+  if (max_time < 0.001f) max_time = 0.001f;
+  
+  // 计算标称速率
+  block->nominal_rate = ceil(block->step_event_count / max_time); // steps/s
+  block->nominal_speed = block->millimeters / max_time; // mm/s
+	 
+  // 计算各轴速度
+  for(int i=0; i < NUM_AXIS; i++) {
+    current_speed[i] = delta_mm[i] / max_time; // mm/s
   }
-	/**
-	*	@step:(10)校验各轴最大允许分速度
-	*/
-	// Correct the speed  
-  if( speed_factor < 1.0f) //说明有某个轴运动速度超过了该轴的最大允许速度，则统一线性缩减，这样可以保证和速度不大于约束，分速度也不大于约束
-  {
-    for(unsigned char i=0; i < NUM_AXIS; i++)
-    {
-      current_speed[i] *= speed_factor;
+  
+			// 方向处理 - 确保方向位正确设置
+		block->direction_bits = 0;
+		if (target[X_AXIS] < position[X_AXIS]) block->direction_bits |= (1<<X_AXIS);
+		if (target[Y_AXIS] < position[Y_AXIS]) block->direction_bits |= (1<<Y_AXIS);
+		if (target[Z_AXIS] < position[Z_AXIS]) block->direction_bits |= (1<<Z_AXIS);
+		if (target[E_AXIS] < position[E_AXIS]) block->direction_bits |= (1<<E_AXIS);
+		if (target[A_AXIS] < position[A_AXIS]) block->direction_bits |= (1<<A_AXIS);
+		if (target[B_AXIS] < position[B_AXIS]) block->direction_bits |= (1<<B_AXIS);
+  // 计算 moves_queued
+  int16_t moves_queued = (block_buffer_head - block_buffer_tail + BLOCK_BUFFER_SIZE) & (BLOCK_BUFFER_SIZE - 1); 
+
+	// 检查速度限制
+  float speed_factor = 1.0;
+  for (int i = 0; i < NUM_AXIS; i++) {
+    float axis_speed = fabs(delta_mm[i]) / max_time; // mm/s
+    if (axis_speed > max_feedrate[i]) {
+      speed_factor = min(speed_factor, max_feedrate[i] / axis_speed);
     }
+  }
+  
+  // 应用速度因子
+  if (speed_factor < 1.0f) {
+    block->nominal_rate *= speed_factor;
     block->nominal_speed *= speed_factor;
-    block->nominal_rate *= speed_factor;	
   }
-	/**
-	*	@step:(11)步骤10进行了速度约束，该部分在其基础上进行加速度约束
-	*/
-	// Compute and limit the acceleration rate for the trapezoid generator.  
-  float steps_per_mm = block->step_event_count/block->millimeters;//步长的合成位移
-	if(block->steps_x == 0 && block->steps_y == 0 && block->steps_z == 0)//若各轴不运动，则加速度只与E轴相关
-  {
-		// retract_acceleration的单位是[mm/sec^2],这里将其转换为[steps/sec^2]
-    block->acceleration_st = ceil(retract_acceleration * steps_per_mm); // convert to: acceleration steps/sec^2取整
-  }
-  else
-  {
-		// 先给定一个较大的初值
-		// acceleration的单位是[mm/sec^2],这里将其转换为[steps/sec^2]
-    block->acceleration_st = ceil(acceleration * steps_per_mm); // convert to: acceleration steps/sec^2
-    // Limit acceleration per axis
-    if(((float)block->acceleration_st * (float)block->steps_x / (float)block->step_event_count) > axis_steps_per_sqr_second[X_AXIS])
-      block->acceleration_st = axis_steps_per_sqr_second[X_AXIS];//加速度在X轴的分量大于X轴加速度为什么不是分量限幅
-    if(((float)block->acceleration_st * (float)block->steps_y / (float)block->step_event_count) > axis_steps_per_sqr_second[Y_AXIS])
-      block->acceleration_st = axis_steps_per_sqr_second[Y_AXIS];//加速度在Y轴的分量大于Y轴加速度
-    if(((float)block->acceleration_st * (float)block->steps_e / (float)block->step_event_count) > axis_steps_per_sqr_second[E_AXIS])
-      block->acceleration_st = axis_steps_per_sqr_second[E_AXIS];//加速度在Z轴的分量大于Z轴加速度
-    if(((float)block->acceleration_st * (float)block->steps_z / (float)block->step_event_count) > axis_steps_per_sqr_second[Z_AXIS])
+  
+  // 计算加速度
+  float steps_per_mm = block->step_event_count / block->millimeters;
+  if (block->steps_x == 0 && block->steps_y == 0 && block->steps_z == 0) {
+    block->acceleration_st = ceil(retract_acceleration * steps_per_mm);
+  } else {
+    block->acceleration_st = ceil(acceleration * steps_per_mm);
+    // 限制各轴加速度
+    if (((float)block->acceleration_st * (float)block->steps_x / (float)block->step_event_count) > axis_steps_per_sqr_second[X_AXIS])
+      block->acceleration_st = axis_steps_per_sqr_second[X_AXIS];
+    if (((float)block->acceleration_st * (float)block->steps_y / (float)block->step_event_count) > axis_steps_per_sqr_second[Y_AXIS])
+      block->acceleration_st = axis_steps_per_sqr_second[Y_AXIS];
+    if (((float)block->acceleration_st * (float)block->steps_e / (float)block->step_event_count) > axis_steps_per_sqr_second[E_AXIS])
+      block->acceleration_st = axis_steps_per_sqr_second[E_AXIS];
+    if (((float)block->acceleration_st * (float)block->steps_z / (float)block->step_event_count) > axis_steps_per_sqr_second[Z_AXIS])
       block->acceleration_st = axis_steps_per_sqr_second[Z_AXIS];
   }
-  block->acceleration = block->acceleration_st / steps_per_mm;//块加速度 mm/sec^2
-  block->acceleration_rate = (long)((float)block->acceleration_st * 1.0f);//数据类型转换
+  
+  block->acceleration = block->acceleration_st / steps_per_mm;
+  block->acceleration_rate = (long)((float)block->acceleration_st * 1.0f);
+	
+	
 	/**
 	*	@step:(12)进行速度前瞻准备，依据各轴的最大急停速度，确定一个满足各轴约束的最大块连接速度
 	*/
@@ -598,9 +620,13 @@ void plan_buffer_line(const float x, const float y, const float z, const float e
     }
   }
 	
+	//调试区
 	
-	
-	
+printf("axis_steps_per_unit[B_AXIS]: %f\n", axis_steps_per_unit[A_AXIS]);
+printf("输入角度 b: %f\n", a);
+printf("target[B_AXIS]: %ld\n", target[B_AXIS]);
+printf("当前位置: %ld\n", position[B_AXIS]);
+printf("delta_mm[B_AXIS]: %f\n", delta_mm[B_AXIS]);
 	
 //	// Start with a safe speed
 //  float vmax_junction = max_xy_jerk/2; //块连接点最大速度初始化为xy急停速度[max_xy_jerk]的一半

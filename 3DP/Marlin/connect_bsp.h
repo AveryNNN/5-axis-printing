@@ -65,4 +65,6 @@ void bsp_create_one_a_axis_step(void);
 void bsp_create_one_b_axis_step(void);
 void bsp_set_a_axis_dir(unsigned char dir);
 void bsp_set_b_axis_dir(unsigned char dir);
+void DWT_Init(void);
+void HAL_Delay_us(uint32_t us);
 #endif

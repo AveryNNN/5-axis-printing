@@ -103,6 +103,8 @@ int main(void)
   
   /* 初始化BSP模块 */
   bsp_init();
+	DWT_Init();
+	
 	
   SERIAL_USART_Config(115200);
 	
